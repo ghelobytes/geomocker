@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>geoMocker - client</title>
+    <style>
+        html,
+        body,
+        #map-canvas {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map-canvas"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script src="lib/socket.io-1.2.0.js"></script>
+    <script src="lib/geomocker.js"></script>
+    <script>
+
+        var map;
+        var socket;
+        var START_LOCATION = new google.maps.LatLng(14.5561048, 121.0238425);
+
+        initMap();
+
+        navigator.geolocation.mock();
+
+        navigator.geolocation.watchPosition(function(data) {
+            console.log(data);
+            map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+        }, function(data) {
+            console.log('error_raised: ', data);
+        });
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map-canvas'), {
+                zoom: 15,
+                center: START_LOCATION
+            });
+
+        };
+
+    </script>
+</body>
+</html>

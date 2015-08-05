@@ -1,0 +1,227 @@
+<html lang="en" ng-app="GeoMocker">
+
+<head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
+    <style>
+        .md-toolbar-tools h1 {
+            font-size: inherit;
+            font-weight: inherit;
+            margin: inherit;
+        }
+
+        .left-pane {
+            padding: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body layout="column" ng-controller="MapController as vm">
+    <md-toolbar layout="row">
+        <div class="md-toolbar-tools">
+            <h1 ng-bind="vm.title"></h1>
+        </div>
+    </md-toolbar>
+    <div layout="row" flex>
+        <md-sidenav layout="column" flex="15" class="md-sidenav-left md-whiteframe-z2 left-pane" md-is-locked-open="$mdMedia('gt-sm')">
+
+            <!-- <div layout>
+                <div flex="35" layout layout-align="start center">
+                    <span class="md-primary">Target</span>
+                </div>
+                <md-input-container>
+                    <label>Client ID</label>
+                    <input ng-model="vm.data.targetClient" type="email">
+                </md-input-container>
+            </div> -->
+
+            <div layout>
+                <div flex="30" layout layout-align="start center">
+                    <span class="md-primary">Accuracy</span>
+                </div>
+                <md-slider flex min="0" max="1000" ng-model="vm.data.accuracy" aria-label="red" id="red-slider" class="md-primary" ng-change="vm.emitAccuracy();"></md-slider>
+                <div flex="5">
+                </div>
+                <div flex="25" layout layout-align="center center">
+                    <input type="number" ng-model="vm.data.accuracy" aria-label="red" aria-controls="red-slider" ng-change="vm.emitAccuracy();">
+                </div>
+            </div>
+
+            <div layout>
+                <div flex="15" layout layout-align="start center">
+                    <span class="md-primary">Error</span>
+                </div>
+
+                <md-radio-group ng-model="vm.data.error" ng-change="vm.emitError()">
+                    <md-radio-button value=0 class="md-primary"> NO_ERROR </md-radio-button>
+                    <md-radio-button value=1> PERMISSION_DENIED </md-radio-button>
+                    <md-radio-button value=2> POSITION_UNAVAILABLE </md-radio-button>
+                    <md-radio-button value=3> TIMEOUT </md-radio-button>
+                </md-radio-group>
+
+
+            </div>
+
+        </md-sidenav>
+
+        <div layout="column" flex id="content">
+            <md-content id="map-canvas" layout="column" flex class="md-padding"></md-content>
+        </div>
+    </div>
+
+
+    <!-- Angular Material Dependencies -->
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-animate.min.js"></script>
+    <script src="lib/angular-aria.min.js"></script>
+    <script src="lib/angular-material.min.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="lib/socket.io-1.2.0.js"></script>
+
+    <script>
+        // angular
+        (function() {
+
+            var app = angular.module('GeoMocker', ['ngMaterial']);
+
+            app.controller('MapController', MapController);
+            MapController.$inject = ['MapService'];
+
+            function MapController(MapService) {
+                var vm = this;
+                vm.title = "GeoMocker";
+                vm.data = {
+                    targetClient: '2543',
+                    error: 0,
+                    accuracy: 100
+                };
+                vm.emitAccuracy = function() {
+                    MapService.emitAccuracy(vm.data.accuracy);
+                };
+                vm.emitError = function() {
+                    MapService.emitError(vm.data.error);
+                }
+
+                MapService.init();
+            }
+
+            app.service('MapService', MapService);
+            MapService.$inject = [];
+
+            function MapService() {
+
+                var START_LOCATION = new google.maps.LatLng(14.5561048, 121.0238425);
+                var ICON = "data:image/png;base64,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";
+
+                var map;
+                var socket;
+                var marker;
+
+                initSocket();
+                initMap();
+
+                function initMap() {
+                    map = new google.maps.Map(document.getElementById('map-canvas'), {
+                        zoom: 15,
+                        center: {
+                            lat: 14.5561048,
+                            lng: 121.0238425
+                        }
+                    });
+
+                    marker = new google.maps.Marker({
+                        position: START_LOCATION,
+                        map: map,
+                        draggable: true,
+                        icon: {
+                            url: ICON,
+                            scaledSize: new google.maps.Size(32, 48)
+                        }
+                    });
+
+                    google.maps.event.addListener(marker, 'drag', function() {
+                        var data = {
+                            center: {
+                                lat: marker.position.lat(),
+                                lng: marker.position.lng()
+                            }
+                        }
+                        socket.emit('position_changed', data);
+                    });
+
+                };
+
+                function initSocket() {
+                    socket = io.connect('http://localhost:3000');
+                };
+
+                return {
+                    init: function() {
+                        initSocket();
+                        initMap();
+                    },
+                    emitAccuracy: function(value) {
+                        socket.emit('accuracy_changed', value);
+                    },
+                    emitError: function(type) {
+                        socket.emit('error_raised', type);
+                    }
+                }
+
+            }
+
+        }());
+
+        // maps
+        // (function() {
+        //
+        //   var START_LOCATION = new google.maps.LatLng(14.5561048, 121.0238425);
+        //   var ICON = "data:image/png;base64,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";
+        //
+        //   var map;
+        //   var socket;
+        //   var marker;
+        //
+        //   initSocket();
+        //   initMap();
+        //
+        //   function initMap() {
+        //     map = new google.maps.Map(document.getElementById('map-canvas'), {
+        //       zoom: 15,
+        //       center: {lat: 14.5561048, lng: 121.0238425}
+        //     });
+        //
+        //     marker = new google.maps.Marker({
+        //       position: START_LOCATION,
+        //       map: map,
+        //       draggable: true,
+        //       icon: {
+        //         url: ICON,
+        //         scaledSize: new google.maps.Size(32, 48)
+        //       }
+        //     });
+        //
+        //     google.maps.event.addListener(marker, 'drag', function() {
+        //       var data = {
+        //         center: {lat: marker.position.lat(), lng: marker.position.lng()}
+        //       }
+        //       socket.emit('center_changed', data);
+        //     });
+        //
+        //   };
+        //
+        //   function initSocket() {
+        //     socket = io.connect('http://localhost:3000');
+        //   };
+        //
+        // })();
+    </script>
+
+
+
+</body>
+
+</html>
