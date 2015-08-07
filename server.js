@@ -33,6 +33,7 @@ io.on('connection', function(socket) {
     console.log('new client connected');
 
     socket.on('request_initial_position', function(data) {
+        geo.currentPosition.timestamp = (new Date()).getTime();
         io.emit('set_initial_position', geo.currentPosition);
     });
 

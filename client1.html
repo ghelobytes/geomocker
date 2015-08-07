@@ -28,10 +28,15 @@
 
         initMap();
 
-        navigator.geolocation.mock();
+        GeoMocker.init({
+            socket: {
+                secured: true
+            }
+        });
 
         navigator.geolocation.watchPosition(function(data) {
-            console.log(data);
+            if(!data || data === undefined)
+                console.log("DATA is null!!!!!!!!!");
             map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
         }, function(data) {
             console.log('error_raised: ', data);
