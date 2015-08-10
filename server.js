@@ -1,7 +1,15 @@
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
+var fs = require('fs');
+
+var options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
+var https = require('https').Server(options, app);
+var io = require('socket.io')(https);
 var path = require('path');
 
 var geo = {
@@ -22,6 +30,12 @@ var geo = {
 }
 
 global.geo = geo;
+
+
+
+
+
+
 
 app.use(express.static(path.join(__dirname, '.')));
 
@@ -68,6 +82,6 @@ io.on('connection', function(socket) {
     });
 });
 
-http.listen(3000, function() {
+https.listen(3000, function() {
     console.log('listening on *:3000');
 });
