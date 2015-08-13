@@ -32,11 +32,6 @@ var geo = {
 global.geo = geo;
 
 
-
-
-
-
-
 app.use(express.static(path.join(__dirname, '.')));
 
 app.get('/', function(req, res) {

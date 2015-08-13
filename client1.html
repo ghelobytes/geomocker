@@ -29,9 +29,8 @@
         initMap();
 
         GeoMocker.init({
-            socket: {
-                secured: true
-            }
+            socket: { secured: true },
+            server: 'https://localhost:3000'
         });
 
         navigator.geolocation.watchPosition(function(data) {
