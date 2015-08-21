@@ -1,3 +1,4 @@
+var PORT = 3000;
 var express = require('express');
 var app = express();
 
@@ -77,6 +78,6 @@ io.on('connection', function(socket) {
     });
 });
 
-https.listen(3000, function() {
+https.listen(PORT, function() {
     console.log('listening on *:3000');
 });

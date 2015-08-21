@@ -30,7 +30,7 @@
 
         GeoMocker.init({
             socket: { secured: true },
-            server: 'https://localhost:3000'
+            server: prompt('Geolocation Server','https://10.10.8.137:3000')
         });
 
         navigator.geolocation.watchPosition(function(data) {
