@@ -1,12 +1,16 @@
 {
-  "name": "mocker",
-  "author": "Angelo Arboleda",
-  "private": true,
-  "scripts": {
-    "start": "http-server"
-  },
-  "dependencies": {
-    "express": "^4.13.1",
-    "socket.io": "^1.3.6"
-  }
+    "name": "mocker",
+    "author": "Angelo Arboleda",
+    "private": true,
+    "scripts": {
+        "start": "http-server"
+    },
+    "dependencies": {
+        "express": "^4.13.1",
+        "socket.io": "^1.3.6"
+    },
+    "scripts": {
+        "start": "node server.js"
+    },
+    "main": "server.js"
 }
