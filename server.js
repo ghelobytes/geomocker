@@ -1,4 +1,6 @@
-var PORT = 3000;
+var SERVER_PORT = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var SERVER_IP = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+
 var express = require('express');
 var app = express();
 
@@ -78,6 +80,6 @@ io.on('connection', function(socket) {
     });
 });
 
-https.listen(PORT, function() {
-    console.log('listening on *:3000');
+https.listen(SERVER_PORT, SERVER_IP, function() {
+    console.log('listening on ' + SERVER_IP + ':' + SERVER_PORT);
 });
