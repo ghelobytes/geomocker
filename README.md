@@ -9,16 +9,18 @@ You're welcome =)
 1. Run the server: ``` $ node server.js ```
 2. Take note of the server address (e.g. ```https://localhost:3000```)
 3. Include ```socket.io-x.x.x.js``` and ```geomocker.js``` in your app:
-```html
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="https://raw.githubusercontent.com/ghelobytes/geomocker/master/lib/geomocker.js"></script>
-```
+
+    ```html
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://raw.githubusercontent.com/ghelobytes/geomocker/master/lib/geomocker.js"></script>
+    ```
 4. Initialise inside your app:
-```javascript
-GeoMocker.init({
-    socket: { secured: true },
-    server: 'https://localhost:3000' // server address
-});
+
+    ```javascript
+    GeoMocker.init({
+        socket: { secured: true },
+        server: 'https://localhost:3000' // server address
+    });
 ```
 5. Visit the server's map page (e.g. https://localhost:3000)
 6. Open you web mapping app
